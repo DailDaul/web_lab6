@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <h2 class="my-3 text-center text-uppercase font-weight-bold">Создание курса</h2>
+
+        <form method="POST" action="{{ url_for('courses.create') }}" enctype="multipart/form-data">
+            <div class="mb-3 row">
+                <div class="col-md-6 d-flex flex-column">
+                    <div class="mb-3">
+                        <label for="name">Название (необязательно)</label>
+                        <input class="form-control" type="text" name="name" id="name" value="{{ course.name or '' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="category">Категория (необязательно)</label>
+                        <select class="form-select" name="category_id" id="category">
+                            <option value="">-- Выберите категорию --</option>
+                            {% for category in categories %}
+                                <option {% if course.category_id == category.id | string %}selected{% endif %} value="{{ category.id }}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="teachers">Преподаватели (необязательно)</label>
+                        <select class="form-select" name="teachers_ids" id="teachers" multiple>
+                            {% for user in users %}
+                                <option value="{{ user.id }}" {% if user.id == current_user.id or course.author_id == user.id | string %}selected{% endif %}>{{ user.full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3 d-flex flex-column flex-grow-1">
+                        <label for="short_description">Краткое описание (необязательно)</label>
+                        <textarea class="form-control flex-grow-1" name="short_desc" id="short_description" cols="30" rows="5">{{ course.short_desc or '' }}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-6 d-flex flex-column">
+                    <div class="mb-3">
+                        <label for="background_img">Фоновое изображение (необязательно)</label>
+                        <input class="form-control" type="file" name="background_img" id="background_img">
+                    </div>
+                    <div class="mb-3 background-preview p-3 rounded d-flex align-items-center justify-content-center">
+                        <img src="#" class="img-fluid d-none" alt="">
+                        <label for="background_img" class="btn btn-dark">Выбрать изображение</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="full_description">Полное описание (необязательно)</label>
+                <textarea class="form-control" name="full_desc" id="full_description" cols="30" rows="10">{{ course.full_desc or '' }}</textarea>
+            </div>
+
+            <div class="mb-3 text-center">
+                <input type="submit" class="btn btn-dark" value="Сохранить">
+            </div>
+        </form>
+    </div>
+{% endblock %}
